@@ -22,7 +22,8 @@ abs:
     bge t0, zero, done
 
     # TODO: Add your own implementation
-    
+    sub t0, x0, t0  # t0 = abs(t0)
+    sw t0, 0(a0)    # Update the original value 
 done:
     # Epilogue
     jr ra
