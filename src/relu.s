@@ -29,6 +29,7 @@ relu:
     mv t3, a0            # t3 is used to extract the element of array
 
 loop_start:              # for(i = 0; i < a1, ++i)
+    # TODO: Add your own implementation
     lw t2, 0(t3)         # tmp = Input[i]
     bgez t2, continue    # if Input[i] >= 0 , just skip
     li t2, 0
@@ -40,7 +41,6 @@ continue:
     bne t1, a1, loop_start     
     li a0, 0
     j exit
-    # TODO: Add your own implementation
 error:
     li a0, 36          
     j exit          
