@@ -25,13 +25,24 @@ argmax:
     li t6, 1
     blt a1, t6, handle_error
 
-    lw t0, 0(a0)
-
-    li t1, 0
-    li t2, 1
-loop_start:
+    lw t0, 0(a0)        # t0 is the maximum value
+    addi t2, a0, 4      # t2 is index , which is used to extract the element from array  (arr[index])
+    li a0, 0            # a0 is the position of maximum value
+    li t3, 1            # t3 is the i  (i = 0)
+    beq a1, t3, final   # if len(arr) == 1, then it is done
+    
+loop_start:     
     # TODO: Add your own implementation
-
+    lw t4, 0(t2)            # tmp = arr[index]
+    ble t4, t0, loop_check  # If arr[index] <= max, you don't need to update the maximum
+    mv a0, t3               # Update the position of maximum
+    mv t0, t4               # Update the value of maximum
+loop_check:
+    addi t3, t3, 1          # i++
+    addi t2, t2, 4          # index++
+    bne t3, a1, loop_start  # Loop when i != len(arr)
+final:
+    ret
 handle_error:
     li a0, 36
     j exit

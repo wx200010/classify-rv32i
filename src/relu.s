@@ -36,11 +36,11 @@ loop_start:              # for(i = 0; i < a1, ++i)
     sw t2, 0(t3)
 
 continue:
-    addi t3, t3, 1       # the array index ++
+    addi t3, t3, 4       # the array index ++
     addi t1, t1, 1       # i++
     bne t1, a1, loop_start     
     li a0, 0
-    j exit
+    ret
 error:
     li a0, 36          
     j exit          
