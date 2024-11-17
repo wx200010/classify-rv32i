@@ -63,6 +63,12 @@ write_matrix:
 
     # mul s4, s2, s3   # s4 = total elements
     # FIXME: Replace 'mul' with your own implementation
+    # my own implementation :
+    # call mul function
+    mv a1, s2
+    mv a2, s3
+    jal mul
+    mv s4, a0
 
     # write matrix data to file
     mv a0, s0
@@ -113,3 +119,21 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 44
     j exit
+
+# Perform integer multiplication
+# a1: first operand
+# a2: second operand
+# a0: result (a1 * a2)
+mul:                     # Multiply a1 and a2, store the result in a0
+    li a0, 0             # result = 0
+mul_loop:
+    beqz a2, mul_loop_end     # if a2 is 0, then the multiplication is done
+    andi t0, a2, 1       # check the LSB of a2 
+    beqz t0, mul_skip_add # if LSB is 0, then skip
+    add a0, a0, a1       # result += a1
+mul_skip_add:
+    srli a2, a2, 1       # a2 >>= 1
+    slli a1, a1, 1       # a1 <<= 1
+    j mul_loop
+mul_loop_end:
+    jr ra

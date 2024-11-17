@@ -76,6 +76,15 @@ read_matrix:
 
     # mul s1, t1, t2   # s1 is number of elements
     # FIXME: Replace 'mul' with your own implementation
+    # my own implementation :
+    # call mul function
+    mv a1, t1
+    mv a2, t2
+    jal mul     # Multiply a1 and a2, store the result in a0
+    mv s1, a0   # copy result to s1
+
+
+
 
     slli t3, s1, 2
     sw t3, 24(sp)    # size in bytes
@@ -143,3 +152,22 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 40
     j exit
+
+
+# Perform integer multiplication
+# a1: first operand
+# a2: second operand
+# a0: result (a1 * a2)
+mul:                     # Multiply a1 and a2, store the result in a0
+    li a0, 0             # result = 0
+mul_loop:
+    beqz a2, mul_loop_end     # if a2 is 0, then the multiplication is done
+    andi t0, a2, 1       # check the LSB of a2 
+    beqz t0, mul_skip_add # if LSB is 0, then skip
+    add a0, a0, a1       # result += a1
+mul_skip_add:
+    srli a2, a2, 1       # a2 >>= 1
+    slli a1, a1, 1       # a1 <<= 1
+    j mul_loop
+mul_loop_end:
+    jr ra
