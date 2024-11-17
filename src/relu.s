@@ -39,7 +39,7 @@ continue:
     addi t3, t3, 4       # the array index ++
     addi t1, t1, 1       # i++
     bne t1, a1, loop_start     
-    li a0, 0
+    # li a0, 0
     ret
 error:
     li a0, 36          
