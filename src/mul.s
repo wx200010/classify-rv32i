@@ -1,10 +1,12 @@
 .globl mul
 .text
 # =======================================================
-# FUNCTION: Multiply two integers without using 'mul'
-# Args:
+# FUNCTION: Multiply two integers
+#
+# Arguments:
 #   a0: Multiplicand
 #   a1: Multiplier
+#
 # Returns:
 #   a0: Product result
 # =======================================================
