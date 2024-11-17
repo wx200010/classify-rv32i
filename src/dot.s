@@ -36,6 +36,7 @@ dot:
     li t0, 0            # t0 is dot sum
     li t1, 0            # t1 is i
 loop_start:
+    # TODO: Add your own implementation
     lw t2, 0(a0)        # extract current arr0 element to t2
     lw t3, 0(a1)        # extract current arr1 element to t3
     # calculate t2 * t3
@@ -53,7 +54,6 @@ loop_start:
     add t0, t0, t4
     add a0, a0, a3      # move to next arr0 element
     add a1, a1, a4      # move to next arr1 element
-    # TODO: Add your own implementation
     addi t1, t1, 1
     blt t1, a2, loop_start
 

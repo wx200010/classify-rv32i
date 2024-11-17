@@ -166,7 +166,22 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s8)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX1 #################
+    # Prolouge
+    addi sp, sp, -8
+    sw a1, 0(sp)
+    sw a2, 4(sp)
+    # call mul function
+    mv a1, t0
+    mv a2, t1
+    jal mul
+    # Epilouge
+    lw a1, 0(sp)
+    lw a2, 4(sp)
+    addi sp, sp, 8
+    # ############# End of FIX1 #################
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -205,7 +220,21 @@ classify:
     lw t1, 0(s8)
     # mul a1, t0, t1 # length of h array and set it as second argument
     # FIXME: Replace 'mul' with your own implementation
-    
+    # ################ FIX2 #################
+    # Prolouge
+    addi sp, sp, -8
+    sw a0, 0(sp)
+    sw a2, 4(sp)
+    # call mul function
+    mv a1, t0
+    mv a2, t1
+    jal mul
+    mv a1, a0
+    # Epilouge
+    lw a0, 0(sp)
+    lw a2, 4(sp)
+    addi sp, sp, 8
+    # ############# End of FIX2 #################
     jal relu
     
     lw a0, 0(sp)
@@ -226,7 +255,23 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s6)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX3 #################
+    # Prolouge
+    addi sp, sp, -8
+    sw a1, 0(sp)
+    sw a2, 4(sp)
+    # call mul function
+    mv a1, t0
+    mv a2, t1
+    jal mul
+    # Epilouge
+    lw a1, 0(sp)
+    lw a2, 4(sp)
+    addi sp, sp, 8
+    # ############# End of FIX3 #################
+
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,9 +331,23 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+    # mul a1, t0, t1 # load length of array into second arg
     # FIXME: Replace 'mul' with your own implementation
-    
+    # ################ FIX4 #################
+    # Prolouge
+    addi sp, sp, -8
+    sw a0, 0(sp)
+    sw a2, 4(sp)
+    # call mul function
+    mv a1, t0
+    mv a2, t1
+    jal mul
+    mv a1, a0
+    # Epilouge
+    lw a0, 0(sp)
+    lw a2, 4(sp)
+    addi sp, sp, 8
+    # ############# End of FIX4 #################
     jal argmax
     
     mv t0, a0 # move return value of argmax into t0
@@ -384,3 +443,30 @@ error_args:
 error_malloc:
     li a0, 26
     j exit
+
+
+
+# Perform integer multiplication
+# a1: first operand
+# a2: second operand
+# a0: result (a1 * a2)
+
+mul:                     # Multiply a1 and a2, store the result in a0
+    # Prolouge
+    addi sp, sp, -4
+    sw s0, 0(sp)
+    li a0, 0             # result = 0
+mul_loop:
+    beqz a2, mul_loop_end     # if a2 is 0, then the multiplication is done
+    andi s0, a2, 1       # check the LSB of a2 
+    beqz s0, mul_skip_add # if LSB is 0, then skip
+    add a0, a0, a1       # result += a1
+mul_skip_add:
+    srli a2, a2, 1       # a2 >>= 1
+    slli a1, a1, 1       # a1 <<= 1
+    j mul_loop
+mul_loop_end:
+    # Epilouge
+    lw s0, 0(sp)
+    addi sp, sp, 4
+    jr ra
