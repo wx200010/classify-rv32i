@@ -95,15 +95,134 @@ loop_start:
 ```
 
 ### Task 3.2: Matrix Multiplication
+In `matmul.s`, we need to implement matrix multiplication. 
 
+Since we have already implemented dot.s (for vector dot product), and the original `matmul.s` code already handles index control and calls dot.s to perform the matrix multiplication, our task now is to complete the TODO section, specifically handling the control and updating of the loop counter for the part related to inner_loop_end.
+
+Here’s the relevant code portion:
+```s
+...........
+inner_loop_end:
+    # TODO: Add your own implementation
+    mv t0, a2           # a2 is M0's column count
+    slli t0, t0, 2      # Because a element is 4bytes, we need to shift 4 * (column count) bytes 
+    add s3, s3, t0      # Move M0's element pointer to next row address
+    addi s0, s0, 1      # Outer loop counter + 1
+    j outer_loop_start  # Continue to calculate the next row
+...........
+```
 ## Part B: File Operations and Main
 
 ### Task 1: Read Matrix
+In read_matrix.s, we need to implement reading a binary matrix from a file and loading it into memory. 
 
+Since the original code already handles file reading, error checking, and reporting, our task is to complete the TODO section, which involves implementing the instruction mul s1, t1, t2. This part will call the `mul.s` function that I previously wrote to perform the multiplication.
+
+Here’s the implementation of the TODO section:
+```s
+.............
+    # mul s1, t1, t2   # s1 is number of elements
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX #################
+    # call mul function
+    mv a0, t1
+    mv a1, t2
+    jal mul
+    mv s1, a0
+    # ############# End of FIX #################
+.............
+```
 ### Task 2: Write Matrix
+In write_matrix.s, we need to implement the function to write a matrix to a binary file. 
 
+Since the original code already implements most of the functionality, our task is to complete the TODO section, which involves implementing the instruction mul s4, s2, s3. Similarly, this part will use the `mul.s` function that I previously wrote to handle the multiplication.
+
+Here’s the implementation of the TODO section:
+```s
+    # mul s4, s2, s3   # s4 = total elements
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX #################
+    # call mul function
+    mv a0, s2
+    mv a1, s3
+    jal mul
+    mv s4, a0
+    # ############# End of FIX #################
+```
 ### Task 3: Classification
+In classify.s, we need to bring everything together to classify an input using two weight matrices and the ReLU and ArgMax functions.
 
+Our primary task is to handle the four FIXME sections in the code, each of which requires implementing the mul instruction. These sections will use the `mul.s` function that I wrote earlier to perform the multiplication.
+
+Since `mul.s` is called multiple times in classify.s, the prologue and epilogue are necessary parts, which result in some overhead in terms of register storage. However, if I were to inline the multiplication function by directly implementing the mul in four sections within classify.s, it would lead to code bloat and management difficulties. Therefore, I chose to use function calls instead of inlining to implement the multiplication.
+
+Here’s the relevant code:
+```s
+....................................................
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX1 #################
+    # Prolouge
+    addi sp, sp, -4
+    sw a1, 0(sp)
+    # call mul function
+    mv a0, t0
+    mv a1, t1
+    jal mul
+    # Epilouge
+    lw a1, 0(sp)
+    addi sp, sp, 4
+    # ############# End of FIX1 #################
+....................................................
+    # mul a1, t0, t1 # length of h array and set it as second argument
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX2 #################
+    # Prolouge
+    addi sp, sp, -4
+    sw a0, 0(sp)
+    # call mul function
+    mv a0, t0
+    mv a1, t1
+    jal mul
+    # extract the reutrn value
+    mv a1, a0
+    # Epilouge
+    lw a0, 0(sp)
+    addi sp, sp, 4
+    # ############# End of FIX2 #################
+....................................................
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX3 #################
+    # Prolouge
+    addi sp, sp, -4
+    sw a1, 0(sp)
+    # call mul function
+    mv a0, t0
+    mv a1, t1
+    jal mul
+    # Epilouge
+    lw a1, 0(sp)
+    addi sp, sp, 4
+    # ############# End of FIX3 #################
+....................................................
+    # mul a1, t0, t1 # load length of array into second arg
+    # FIXME: Replace 'mul' with your own implementation
+    # ################ FIX4 #################
+    # Prolouge
+    addi sp, sp, -4
+    sw a0, 0(sp)
+    # call mul function
+    mv a0, t0
+    mv a1, t1
+    jal mul
+    # extract the reutrn value
+    mv a1, a0
+    # Epilouge
+    lw a0, 0(sp)
+    addi sp, sp, 4
+    # ############# End of FIX4 #################
+```
 ## Result
 execute `bash ./test.sh all`
 ```bash
