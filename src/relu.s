@@ -30,15 +30,15 @@ relu:
 
 loop_start:              # for(i = 0; i < a1, ++i)
     # TODO: Add your own implementation
-    lw t2, 0(t3)         # tmp = Input[i]
-    bgez t2, continue    # if Input[i] >= 0 , just skip
-    li t2, 0
-    sw t2, 0(t3)
+    lw t2, 0(t3)         # Extract the value of current element
+    bgez t2, continue    # If the value of element >= 0 , continue to next loop
+    li t2, 0             # Replace the negative element with 0
+    sw t2, 0(t3)         # Update the element
 
 continue:
-    addi t3, t3, 4       # the array index ++
-    addi t1, t1, 1       # i++
-    bne t1, a1, loop_start     
+    addi t3, t3, 4       # Increase the array index
+    addi t1, t1, 1       # Increase the loop counter
+    bne t1, a1, loop_start # if loop counter > number of elements, then break.
     # li a0, 0
     ret
 error:
