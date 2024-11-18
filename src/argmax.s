@@ -28,9 +28,9 @@ argmax:
     lw t0, 0(a0)        # t0 is the maximum value (initial as first element)
     addi t2, a0, 4      # t2 is index , which is used to extract the element from array  (arr[index])
     li a0, 0            # a0 is the position of maximum value (initial as first position)
+    li t3, 1            # t3 is the loop counter  (i = 1)
     beq a1, t3, final   # if len(arr) == 1, then it is done, go to return
 
-    li t3, 1            # t3 is the loop counter  (i = 1)
 loop_start:     
     # TODO: Add your own implementation
     lw t4, 0(t2)            # tmp = arr[index]

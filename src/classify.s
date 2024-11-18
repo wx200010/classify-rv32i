@@ -1,3 +1,4 @@
+.import ./mul.s
 .globl classify
 
 .text
@@ -170,17 +171,15 @@ classify:
     # FIXME: Replace 'mul' with your own implementation
     # ################ FIX1 #################
     # Prolouge
-    addi sp, sp, -8
+    addi sp, sp, -4
     sw a1, 0(sp)
-    sw a2, 4(sp)
     # call mul function
-    mv a1, t0
-    mv a2, t1
+    mv a0, t0
+    mv a1, t1
     jal mul
     # Epilouge
     lw a1, 0(sp)
-    lw a2, 4(sp)
-    addi sp, sp, 8
+    addi sp, sp, 4
     # ############# End of FIX1 #################
     slli a0, a0, 2
     jal malloc 
@@ -222,18 +221,17 @@ classify:
     # FIXME: Replace 'mul' with your own implementation
     # ################ FIX2 #################
     # Prolouge
-    addi sp, sp, -8
+    addi sp, sp, -4
     sw a0, 0(sp)
-    sw a2, 4(sp)
     # call mul function
-    mv a1, t0
-    mv a2, t1
+    mv a0, t0
+    mv a1, t1
     jal mul
+    # extract the reutrn value
     mv a1, a0
     # Epilouge
     lw a0, 0(sp)
-    lw a2, 4(sp)
-    addi sp, sp, 8
+    addi sp, sp, 4
     # ############# End of FIX2 #################
     jal relu
     
@@ -259,17 +257,15 @@ classify:
     # FIXME: Replace 'mul' with your own implementation
     # ################ FIX3 #################
     # Prolouge
-    addi sp, sp, -8
+    addi sp, sp, -4
     sw a1, 0(sp)
-    sw a2, 4(sp)
     # call mul function
-    mv a1, t0
-    mv a2, t1
+    mv a0, t0
+    mv a1, t1
     jal mul
     # Epilouge
     lw a1, 0(sp)
-    lw a2, 4(sp)
-    addi sp, sp, 8
+    addi sp, sp, 4
     # ############# End of FIX3 #################
 
     slli a0, a0, 2
@@ -335,18 +331,17 @@ classify:
     # FIXME: Replace 'mul' with your own implementation
     # ################ FIX4 #################
     # Prolouge
-    addi sp, sp, -8
+    addi sp, sp, -4
     sw a0, 0(sp)
-    sw a2, 4(sp)
     # call mul function
-    mv a1, t0
-    mv a2, t1
+    mv a0, t0
+    mv a1, t1
     jal mul
+    # extract the reutrn value
     mv a1, a0
     # Epilouge
     lw a0, 0(sp)
-    lw a2, 4(sp)
-    addi sp, sp, 8
+    addi sp, sp, 4
     # ############# End of FIX4 #################
     jal argmax
     
@@ -444,29 +439,3 @@ error_malloc:
     li a0, 26
     j exit
 
-
-
-# Perform integer multiplication
-# a1: first operand
-# a2: second operand
-# a0: result (a1 * a2)
-
-mul:                     # Multiply a1 and a2, store the result in a0
-    # Prolouge
-    addi sp, sp, -4
-    sw s0, 0(sp)
-    li a0, 0             # result = 0
-mul_loop:
-    beqz a2, mul_loop_end     # if a2 is 0, then the multiplication is done
-    andi s0, a2, 1       # check the LSB of a2 
-    beqz s0, mul_skip_add # if LSB is 0, then skip
-    add a0, a0, a1       # result += a1
-mul_skip_add:
-    srli a2, a2, 1       # a2 >>= 1
-    slli a1, a1, 1       # a1 <<= 1
-    j mul_loop
-mul_loop_end:
-    # Epilouge
-    lw s0, 0(sp)
-    addi sp, sp, 4
-    jr ra

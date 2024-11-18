@@ -30,8 +30,8 @@ dot:
     blt a2, t0, error_terminate  
     blt a3, t0, error_terminate   
     blt a4, t0, error_terminate  
-    slli a3, a3, 2      # a3 = 4 * a3
-    slli a4, a4, 2      # a4 = 4 * a4
+    slli a3, a3, 2      # Because an element is 4bytes, i update the stripes to 4 * stripes
+    slli a4, a4, 2      # Because an element is 4bytes, i update the stripes to 4 * stripes
 
     li t0, 0            # t0 is dot sum
     li t1, 0            # t1 is i
